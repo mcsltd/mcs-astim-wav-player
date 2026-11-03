@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>483</width>
-    <height>266</height>
+    <width>489</width>
+    <height>279</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FFR Vaw Player</string>
+   <string>FFR Wav Player</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -32,7 +32,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Wav-файл</string>
+           <string>WAV-файл</string>
           </property>
          </widget>
         </item>
@@ -44,7 +44,7 @@
           <item>
            <widget class="QPushButton" name="pushButtonSelectWav">
             <property name="text">
-             <string>Выбрать VAW</string>
+             <string>Выбрать WAV</string>
             </property>
            </widget>
           </item>
@@ -105,6 +105,18 @@
                </property>
               </spacer>
              </item>
+             <item>
+              <widget class="QLabel" name="labelTimeCounter">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>[00:00/00:00]</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
            <item>
@@ -131,7 +143,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>483</width>
+     <width>489</width>
      <height>33</height>
     </rect>
    </property>

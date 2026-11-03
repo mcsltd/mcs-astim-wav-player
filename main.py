@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 import sounddevice as sd
+import soundfile as sf
 
 from PySide6.QtWidgets import QMainWindow, QApplication, QFileDialog
 
@@ -13,6 +14,12 @@ class WavPlayer:
 
     def __init__(self):
         self._path_to_wav = None
+        self.device = None
+        self._data = None
+        self._samplerate = None
+        self._position = 0
+        self._paused = False
+        self._stream = None
 
     @property
     def path_to_wav(self):
@@ -21,15 +28,73 @@ class WavPlayer:
     def path_to_wav(self, path):
         self._path_to_wav = path
 
-    def start(self):
-        pass
+    @property
+    def paused(self):
+        return self._paused
 
-    def stop(self):
-        pass
+    def load(self):
+        self.stop()
+        self._data, self._samplerate = sf.read(
+            self._path_to_wav, dtype="float32", always_2d=True
+        )
+        self._position = 0
+        logger.debug(f"loaded wav: {self._path_to_wav}, shape={self._data.shape}")
+
+    def _callback(self, outdata, frames, time, status):
+        if status:
+            logger.warning(f"audio callback status: {status}")
+
+        if self._paused:
+            outdata.fill(0)
+            return
+
+        chunk = self._data[self._position:self._position + frames]
+        outdata[:len(chunk)] = chunk
+
+        if len(chunk) < frames:
+            outdata[len(chunk):] = 0
+            self._position = len(self._data)
+            raise sd.CallbackStop
+
+        self._position += frames
+
+    def start(self):
+        if self._data is None:
+            logger.warning("wav file is not selected")
+            return
+
+        if self._stream is not None and self._stream.active:
+            self._paused = False
+            return
+
+        if self._stream is not None:
+            self._stream.close()
+            self._stream = None
+
+        if self._position >= len(self._data):
+            self._position = 0
+
+        self._paused = False
+        self._stream = sd.OutputStream(
+            samplerate=self._samplerate,
+            device=self.device,
+            channels=self._data.shape[1],
+            dtype="float32",
+            callback=self._callback,
+        )
+        self._stream.start()
 
     def pause(self):
-        pass
+        if self._stream is not None and self._stream.active:
+            self._paused = not self._paused
 
+    def stop(self):
+        if self._stream is not None:
+            self._stream.stop()
+            self._stream.close()
+            self._stream = None
+        self._position = 0
+        self._paused = False
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
@@ -38,9 +103,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self._player = WavPlayer()
         self.pushButtonSelectWav.clicked.connect(self.on_selected_wav_clicked)
-        self.pushButtonStart.clicked.connect(self._player.start)
-        self.pushButtonStop.clicked.connect(self._player.stop)
-        self.pushButtonPause.clicked.connect(self._player.pause)
+        self.pushButtonStart.clicked.connect(self.on_start_clicked)
+        self.pushButtonStop.clicked.connect(self.on_stop_clicked)
+        self.pushButtonPause.clicked.connect(self.on_pause_clicked)
 
         self._set_output_devices()
 
@@ -59,12 +124,39 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "WAV файлы (*.wav);;Все файлы (*)",
             options=QFileDialog.Option.DontResolveSymlinks
         )
+        if not path:
+            return
+
         path_to_wav = Path(path)
         logger.debug(f"WAV file: {path_to_wav.name}")
         self.lineEditPathToWav.setText(path_to_wav.name)
 
+        self._player.path_to_wav = str(path_to_wav)
+        self._player.load()
+        self.groupBox.setEnabled(True)
+        self._enable_player()
+
+    def on_start_clicked(self):
+        device = self.comboBoxOutputDevices.currentData()
+        self._player.device = device["index"] if device else None
+        self._player.start()
+        self.pushButtonPause.setText("Пауза")
+
+    def on_pause_clicked(self):
+        self._player.pause()
+        if self._player.paused:
+            self.pushButtonPause.setText("Продолжить")
+        else:
+            self.pushButtonPause.setText("Пауза")
+
+    def on_stop_clicked(self):
+        self._player.stop()
+        self.pushButtonPause.setText("Пауза")
+
     def _enable_player(self):
         self.pushButtonStart.setEnabled(True)
+        self.pushButtonPause.setEnabled(True)
+        self.pushButtonStop.setEnabled(True)
 
 def setup_logging():
     logging.basicConfig(
@@ -73,12 +165,29 @@ def setup_logging():
         force=True
     )
 
-if __name__ == "__main__":
+def main():
     setup_logging()
 
     app = QApplication([])
 
     win = MainWindow()
-    win.showMaximized()
+    win.show()
 
     app.exec()
+
+
+def create_vaw():
+    from utils.create_wav import create_wav
+
+    path = create_wav(
+        output_dir="output",
+        inter_stimulus_interval_ms=100,
+        num_repetitions=100,
+        syllable_wav="./vaw_files/DA+20.wav",
+        add_inv=True,
+        amplitude=1.0,
+    )
+
+if __name__ == "__main__":
+    main()
+    # create_vaw()
