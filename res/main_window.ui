@@ -44,7 +44,7 @@
           <item>
            <widget class="QPushButton" name="pushButtonSelectWav">
             <property name="text">
-             <string>Выбрать WAV</string>
+             <string>Выбрать VAW</string>
             </property>
            </widget>
           </item>
