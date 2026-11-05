@@ -13,9 +13,10 @@ from PySide6.QtWidgets import (
     QStyleFactory,
 )
 
-from config import DEBUG, DEVICE_NAME
+from config import DEBUG, DEVICE_NAME, VERSION
 from res.main_window import Ui_MainWindow
 from res.waiting_dialog import WaitingDialog
+from ui.dlg_about_app import DlgAboutApp
 from utils.device_monitor import (
     DeviceMonitor,
     find_astim_device,
@@ -141,7 +142,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButtonStart.clicked.connect(self.on_start_clicked)
         self.pushButtonStop.clicked.connect(self.on_stop_clicked)
         self.actionExit.triggered.connect(self.close)
-
+        self.actionAbout.triggered.connect(self.on_about_clicked)
 
         self._time_timer = QTimer(self)
         self._time_timer.setInterval(200)
@@ -427,6 +428,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self._player.active and not self._confirm_stop():
             return
         self._stop_playback()
+
+    def on_about_clicked(self):
+        """ обработка нажатия кнопки меню О программе..."""
+        dlg = DlgAboutApp(parent=self, version=VERSION)
+        dlg.exec()
 
 def setup_logging():
     logging.basicConfig(

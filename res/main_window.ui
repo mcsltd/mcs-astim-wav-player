@@ -246,7 +246,7 @@
     <property name="title">
      <string>Помощь</string>
     </property>
-    <addaction name="action"/>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menu"/>
@@ -257,9 +257,9 @@
     <string>Выход</string>
    </property>
   </action>
-  <action name="action">
+  <action name="actionAbout">
    <property name="text">
-    <string>О программе</string>
+    <string>О программе...</string>
    </property>
   </action>
  </widget>
