@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>495</width>
-    <height>283</height>
+    <height>286</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,7 +46,7 @@
            </font>
           </property>
           <property name="text">
-           <string>WAV-файл</string>
+           <string>Название файла</string>
           </property>
          </widget>
         </item>
@@ -211,6 +211,7 @@
               <widget class="QProgressBar" name="RecPlaybackBar">
                <property name="font">
                 <font>
+                 <pointsize>9</pointsize>
                  <kerning>true</kerning>
                 </font>
                </property>

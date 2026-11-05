@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowHUicBK.ui'
+## Form generated from reading UI file 'main_windowgfuEGj.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(495, 283)
+        MainWindow.resize(495, 286)
         icon = QIcon()
         icon.addFile(u":/images/icon.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
@@ -154,6 +154,7 @@ class Ui_MainWindow(object):
         self.RecPlaybackBar = QProgressBar(self.groupBox)
         self.RecPlaybackBar.setObjectName(u"RecPlaybackBar")
         font1 = QFont()
+        font1.setPointSize(9)
         font1.setKerning(True)
         self.RecPlaybackBar.setFont(font1)
         self.RecPlaybackBar.setAutoFillBackground(False)
@@ -221,7 +222,7 @@ class Ui_MainWindow(object):
         self.actionExit.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0445\u043e\u0434", None))
         self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"\u041e \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435...", None))
         self.labelDevicePlayer.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0438\u0433\u0440\u044b\u0432\u0430\u0442\u0435\u043b\u044c", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"WAV-\u0444\u0430\u0439\u043b", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0444\u0430\u0439\u043b\u0430", None))
         self.pushButtonSelectWav.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0440\u0430\u0442\u044c WAV", None))
         self.labelPlayer.setText(QCoreApplication.translate("MainWindow", u"MCS A-stim R.1.1", None))
         self.labelStatePlayer.setText("")
