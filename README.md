@@ -16,7 +16,7 @@
 
 Самый простой способ - скачать готовый установщик AstimWavPlayer со страницы Releases:
 
-1. Перейдите на страницу [Releases](https://github.com/mcsltd/mcs-inRat-monitor/releases) этого репозитория
+1. Перейдите на страницу [Releases](https://github.com/mcsltd/mcs-astim-wav-player/releases) этого репозитория
 2. Найдите последний релиз (самый верхний)
 3. В разделе Assets скачайте архив с установщиком
 4. Распакуйте архив
@@ -37,7 +37,7 @@
 
 1. Клонируйте репозиторий:
 ```
-git clone git@github.com:mcsltd/mcs-inRat-monitor.git
+git clone git@github.com:mcsltd/mcs-astim-wav-player.git
 ```
 
 2. Создайте виртуальное окружение:
