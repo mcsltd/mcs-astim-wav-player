@@ -1,1 +1,2 @@
 DEVICE_NAME = "MCS A-Stim R1.1"
+DEBUG = False
