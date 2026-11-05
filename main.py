@@ -5,8 +5,9 @@ import sounddevice as sd
 import soundfile as sf
 
 from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QMainWindow, QApplication, QFileDialog
+from PySide6.QtWidgets import QMainWindow, QApplication, QFileDialog, QStyleFactory
 
+from config import DEVICE_NAME
 from res.main_window import Ui_MainWindow
 
 logger = logging.getLogger(__name__)
@@ -16,7 +17,7 @@ def format_time(seconds):
     return f"{seconds // 60:02d}:{seconds % 60:02d}"
 
 class WavPlayer:
-
+    """ Проигрыватель WAV-файла """
     def __init__(self):
         self._path_to_wav = None
         self.device = None
@@ -117,11 +118,15 @@ class WavPlayer:
         self._paused = False
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    """ Главное окно проигрывателя VAW-файла. """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setupUi(self)
+        self._debug = True
+        self.set_debug_mode(False)
 
         self._player = WavPlayer()
+
         self.pushButtonSelectWav.clicked.connect(self.on_selected_wav_clicked)
         self.pushButtonStart.clicked.connect(self.on_start_clicked)
         self.pushButtonStop.clicked.connect(self.on_stop_clicked)
@@ -131,7 +136,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._time_timer.setInterval(200)
         self._time_timer.timeout.connect(self.update_time_counter)
 
+        self.RecPlaybackBar.setStyle(QStyleFactory.create("Fusion"))
+
         self._set_output_devices()
+
+    def set_debug_mode(self, state: bool):
+        """
+        Переключение режима дебага.
+        state = True - дебаг включен
+        state = False - дебаг отключен
+        """
+        self._debug = state
+        self.comboBoxOutputDevices.setVisible(state)
+        self.labelDevicePlayer.setVisible(state)
+
 
     def _set_output_devices(self):
         hostapis = sd.query_hostapis()
@@ -146,6 +164,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if wasapi_indexes and device["hostapi"] not in wasapi_indexes:
                 continue
             logger.debug(f"get device: {device}")
+
+            if self._debug and DEVICE_NAME in device["name"]:
+                self.set_astim_connected(True)
+
             self.comboBoxOutputDevices.addItem(device["name"], userData=device)
 
     def on_selected_wav_clicked(self):
@@ -170,9 +192,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.groupBox.setEnabled(True)
         self._enable_player()
 
+    def set_astim_connected(self, connected: bool):
+        """Переключает цвет индикатора: True - зеленый, False - красный"""
+        color = "#2ecc71" if connected else "#e74c3c"
+
+        self.labelStatePlayer.setStyleSheet(
+            f"""
+            background-color: {color};
+            border-radius: 8px;
+            border: 1px solid #7f8c8d;
+        """
+        )
+
     def update_time_counter(self):
+        level = self._player.position / self._player.duration * 100
         current = format_time(self._player.position)
         total = format_time(self._player.duration)
+
+        self.RecPlaybackBar.setValue(level)
         self.labelTimeCounter.setText(f"[{current}/{total}]")
 
     def on_start_clicked(self):
