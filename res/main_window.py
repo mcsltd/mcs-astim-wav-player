@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowqjGncZ.ui'
+## Form generated from reading UI file 'main_windowNQbgfG.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -118,12 +118,18 @@ class Ui_MainWindow(object):
         self.pushButtonStart = QPushButton(self.groupBox)
         self.pushButtonStart.setObjectName(u"pushButtonStart")
         self.pushButtonStart.setEnabled(False)
+        icon1 = QIcon()
+        icon1.addFile(u":/images/start.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.pushButtonStart.setIcon(icon1)
 
         self.horizontalLayout_2.addWidget(self.pushButtonStart)
 
         self.pushButtonStop = QPushButton(self.groupBox)
         self.pushButtonStop.setObjectName(u"pushButtonStop")
         self.pushButtonStop.setEnabled(False)
+        icon2 = QIcon()
+        icon2.addFile(u":/images/stop.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.pushButtonStop.setIcon(icon2)
 
         self.horizontalLayout_2.addWidget(self.pushButtonStop)
 

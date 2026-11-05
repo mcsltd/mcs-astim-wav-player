@@ -403,11 +403,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._time_timer.start()
         self._update_controls_state()
 
-    def _confirm_stop(self) -> bool:
+    def _ask_confirmation(self, title: str, text: str) -> bool:
         message_box = QMessageBox(self)
         message_box.setIcon(QMessageBox.Icon.Question)
-        message_box.setWindowTitle("Остановка воспроизведения")
-        message_box.setText("Идёт воспроизведение файла. Хотите остановить?")
+        message_box.setWindowTitle(title)
+        message_box.setText(text)
         yes_button = message_box.addButton(
             "Да", QMessageBox.ButtonRole.YesRole
         )
@@ -417,6 +417,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         message_box.setDefaultButton(no_button)
         message_box.exec()
         return message_box.clickedButton() is yes_button
+
+    def _confirm_stop(self) -> bool:
+        return self._ask_confirmation(
+            "Остановка воспроизведения",
+            "Идёт воспроизведение файла. Хотите остановить?",
+        )
+
+    def _confirm_exit(self) -> bool:
+        return self._ask_confirmation(
+            "Выход из программы",
+            "Идёт воспроизведение аудиосигнала. Вы действительно хотите выйти?",
+        )
+
+    def closeEvent(self, event):
+        if self._player.active:
+            if not self._confirm_exit():
+                event.ignore()
+                return
+            self._stop_playback()
+        super().closeEvent(event)
 
     def _stop_playback(self):
         self._player.stop()
