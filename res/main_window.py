@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowMUcgYb.ui'
+## Form generated from reading UI file 'main_window.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -121,12 +121,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.pushButtonStart)
 
-        self.pushButtonPause = QPushButton(self.groupBox)
-        self.pushButtonPause.setObjectName(u"pushButtonPause")
-        self.pushButtonPause.setEnabled(False)
-
-        self.horizontalLayout_2.addWidget(self.pushButtonPause)
-
         self.pushButtonStop = QPushButton(self.groupBox)
         self.pushButtonStop.setObjectName(u"pushButtonStop")
         self.pushButtonStop.setEnabled(False)
@@ -218,9 +212,8 @@ class Ui_MainWindow(object):
         self.pushButtonSelectWav.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0440\u0430\u0442\u044c VAW", None))
         self.labelPlayer.setText(QCoreApplication.translate("MainWindow", u"MCS A-stim R.1.1", None))
         self.labelStatePlayer.setText("")
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435", None))
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u0412\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u0435", None))
         self.pushButtonStart.setText(QCoreApplication.translate("MainWindow", u"\u0421\u0442\u0430\u0440\u0442", None))
-        self.pushButtonPause.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0430\u0443\u0437\u0430", None))
         self.pushButtonStop.setText(QCoreApplication.translate("MainWindow", u"\u0421\u0442\u043e\u043f", None))
         self.RecPlaybackBar.setFormat("")
         self.labelTimeCounter.setText(QCoreApplication.translate("MainWindow", u"[00:00/00:00]", None))

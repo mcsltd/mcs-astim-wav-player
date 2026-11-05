@@ -37,7 +37,6 @@ class WavPlayer:
         self._data = None
         self._samplerate = None
         self._position = 0
-        self._paused = False
         self._stream = None
 
     @property
@@ -46,10 +45,6 @@ class WavPlayer:
     @path_to_wav.setter
     def path_to_wav(self, path):
         self._path_to_wav = path
-
-    @property
-    def paused(self):
-        return self._paused
 
     @property
     def active(self):
@@ -83,10 +78,6 @@ class WavPlayer:
         if status:
             logger.warning(f"audio callback status: {status}")
 
-        if self._paused:
-            outdata.fill(0)
-            return
-
         chunk = self._data[self._position:self._position + frames]
         outdata[:len(chunk)] = chunk
 
@@ -103,7 +94,6 @@ class WavPlayer:
             return
 
         if self._stream is not None and self._stream.active:
-            self._paused = False
             return
 
         if self._stream is not None:
@@ -113,7 +103,6 @@ class WavPlayer:
         if self._position >= len(self._data):
             self._position = 0
 
-        self._paused = False
         extra = sd.WasapiSettings(exclusive=True)
         logger.debug(f"{self._samplerate=}")
         self._stream = sd.OutputStream(
@@ -126,17 +115,12 @@ class WavPlayer:
         )
         self._stream.start()
 
-    def pause(self):
-        if self._stream is not None and self._stream.active:
-            self._paused = not self._paused
-
     def stop(self):
         if self._stream is not None:
             self._stream.stop()
             self._stream.close()
             self._stream = None
         self._position = 0
-        self._paused = False
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     """ Главное окно проигрывателя VAW-файла. """
@@ -156,7 +140,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButtonSelectWav.clicked.connect(self.on_selected_wav_clicked)
         self.pushButtonStart.clicked.connect(self.on_start_clicked)
         self.pushButtonStop.clicked.connect(self.on_stop_clicked)
-        self.pushButtonPause.clicked.connect(self.on_pause_clicked)
         self.actionExit.triggered.connect(self.close)
 
 
@@ -262,7 +245,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         if not connected:
             if self._player.active:
-                self.on_stop_clicked()
+                self._stop_playback()
             if self._pa_devices_dirty:
                 self._reload_output_devices()
             if not self._debug:
@@ -325,11 +308,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._debug or self._astim_connected
         )
 
+        self.pushButtonSelectWav.setEnabled(not self._player.active)
         self.pushButtonStart.setEnabled(can_play and not self._player.active)
-        self.pushButtonPause.setEnabled(can_play and self._player.active)
         self.pushButtonStop.setEnabled(self._player.active)
 
     def on_selected_wav_clicked(self):
+        if self._player.active:
+            logger.warning("cannot change wav file during playback")
+            return
+
         path, _ = QFileDialog.getOpenFileName(
             self,
             "Выберите WAV файл для воспроизведения",
@@ -373,6 +360,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.RecPlaybackBar.setValue(level)
         self.labelTimeCounter.setText(f"[{current}/{total}]")
 
+        if self._player.opened and not self._player.active:
+            self._time_timer.stop()
+            self._update_controls_state()
+
     def on_start_clicked(self):
         if not self._debug and not self._astim_connected:
             self._show_waiting_dialog(lost_connection=False)
@@ -409,23 +400,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 
         self._time_timer.start()
-        self.pushButtonPause.setText("Пауза")
         self._update_controls_state()
 
-    def on_pause_clicked(self):
-        self._player.pause()
-        if self._player.paused:
-            self.pushButtonPause.setText("Продолжить")
-        else:
-            self.pushButtonPause.setText("Пауза")
-        self._update_controls_state()
+    def _confirm_stop(self) -> bool:
+        message_box = QMessageBox(self)
+        message_box.setIcon(QMessageBox.Icon.Question)
+        message_box.setWindowTitle("Остановка воспроизведения")
+        message_box.setText("Идёт воспроизведение файла. Хотите остановить?")
+        yes_button = message_box.addButton(
+            "Да", QMessageBox.ButtonRole.YesRole
+        )
+        no_button = message_box.addButton(
+            "Нет", QMessageBox.ButtonRole.NoRole
+        )
+        message_box.setDefaultButton(no_button)
+        message_box.exec()
+        return message_box.clickedButton() is yes_button
 
-    def on_stop_clicked(self):
+    def _stop_playback(self):
         self._player.stop()
         self._time_timer.stop()
         self.update_time_counter()
-        self.pushButtonPause.setText("Пауза")
         self._update_controls_state()
+
+    def on_stop_clicked(self):
+        if self._player.active and not self._confirm_stop():
+            return
+        self._stop_playback()
 
 def setup_logging():
     logging.basicConfig(
