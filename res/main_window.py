@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowNQbgfG.ui'
+## Form generated from reading UI file 'main_windowHUicBK.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -45,6 +45,9 @@ class Ui_MainWindow(object):
         self.formLayout.setObjectName(u"formLayout")
         self.labelDevicePlayer = QLabel(self.centralwidget)
         self.labelDevicePlayer.setObjectName(u"labelDevicePlayer")
+        font = QFont()
+        font.setPointSize(11)
+        self.labelDevicePlayer.setFont(font)
 
         self.formLayout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.labelDevicePlayer)
 
@@ -55,6 +58,7 @@ class Ui_MainWindow(object):
 
         self.label_2 = QLabel(self.centralwidget)
         self.label_2.setObjectName(u"label_2")
+        self.label_2.setFont(font)
 
         self.formLayout.setWidget(2, QFormLayout.ItemRole.LabelRole, self.label_2)
 
@@ -68,6 +72,7 @@ class Ui_MainWindow(object):
 
         self.pushButtonSelectWav = QPushButton(self.centralwidget)
         self.pushButtonSelectWav.setObjectName(u"pushButtonSelectWav")
+        self.pushButtonSelectWav.setFont(font)
 
         self.horizontalLayout.addWidget(self.pushButtonSelectWav)
 
@@ -76,6 +81,7 @@ class Ui_MainWindow(object):
 
         self.labelPlayer = QLabel(self.centralwidget)
         self.labelPlayer.setObjectName(u"labelPlayer")
+        self.labelPlayer.setFont(font)
 
         self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.labelPlayer)
 
@@ -109,6 +115,7 @@ class Ui_MainWindow(object):
 
         self.groupBox = QGroupBox(self.centralwidget)
         self.groupBox.setObjectName(u"groupBox")
+        self.groupBox.setFont(font)
         self.verticalLayout_4 = QVBoxLayout(self.groupBox)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_3 = QVBoxLayout()
@@ -118,6 +125,7 @@ class Ui_MainWindow(object):
         self.pushButtonStart = QPushButton(self.groupBox)
         self.pushButtonStart.setObjectName(u"pushButtonStart")
         self.pushButtonStart.setEnabled(False)
+        self.pushButtonStart.setFont(font)
         icon1 = QIcon()
         icon1.addFile(u":/images/start.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.pushButtonStart.setIcon(icon1)
@@ -127,6 +135,7 @@ class Ui_MainWindow(object):
         self.pushButtonStop = QPushButton(self.groupBox)
         self.pushButtonStop.setObjectName(u"pushButtonStop")
         self.pushButtonStop.setEnabled(False)
+        self.pushButtonStop.setFont(font)
         icon2 = QIcon()
         icon2.addFile(u":/images/stop.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.pushButtonStop.setIcon(icon2)
@@ -144,9 +153,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.RecPlaybackBar = QProgressBar(self.groupBox)
         self.RecPlaybackBar.setObjectName(u"RecPlaybackBar")
-        font = QFont()
-        font.setKerning(True)
-        self.RecPlaybackBar.setFont(font)
+        font1 = QFont()
+        font1.setKerning(True)
+        self.RecPlaybackBar.setFont(font1)
         self.RecPlaybackBar.setAutoFillBackground(False)
         self.RecPlaybackBar.setStyleSheet(u"QProgressBar {\n"
 "        text-align: center;\n"
@@ -168,9 +177,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.labelTimeCounter.sizePolicy().hasHeightForWidth())
         self.labelTimeCounter.setSizePolicy(sizePolicy1)
         self.labelTimeCounter.setMaximumSize(QSize(150, 16777215))
-        font1 = QFont()
-        font1.setPointSize(11)
-        self.labelTimeCounter.setFont(font1)
+        self.labelTimeCounter.setFont(font)
 
         self.horizontalLayout_3.addWidget(self.labelTimeCounter)
 
@@ -210,12 +217,12 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"FFR Wav Player", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"AstimWavPlayer", None))
         self.actionExit.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0445\u043e\u0434", None))
         self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"\u041e \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435...", None))
         self.labelDevicePlayer.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0438\u0433\u0440\u044b\u0432\u0430\u0442\u0435\u043b\u044c", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"WAV-\u0444\u0430\u0439\u043b", None))
-        self.pushButtonSelectWav.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0440\u0430\u0442\u044c VAW", None))
+        self.pushButtonSelectWav.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0440\u0430\u0442\u044c WAV", None))
         self.labelPlayer.setText(QCoreApplication.translate("MainWindow", u"MCS A-stim R.1.1", None))
         self.labelStatePlayer.setText("")
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u0412\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u0435", None))
