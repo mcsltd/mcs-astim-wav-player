@@ -4,6 +4,7 @@
 /vaw_files
 *.wav
 /output
+*.iss
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
