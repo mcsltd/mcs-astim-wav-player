@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowHgEwQQ.ui'
+## Form generated from reading UI file 'main_windowMUcgYb.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -21,12 +21,16 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFormLayout, QGroupBox,
     QMenu, QMenuBar, QProgressBar, QPushButton,
     QSizePolicy, QSpacerItem, QStatusBar, QVBoxLayout,
     QWidget)
+import res.resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(495, 283)
+        icon = QIcon()
+        icon.addFile(u":/images/icon.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        MainWindow.setWindowIcon(icon)
         self.actionExit = QAction(MainWindow)
         self.actionExit.setObjectName(u"actionExit")
         self.action = QAction(MainWindow)
