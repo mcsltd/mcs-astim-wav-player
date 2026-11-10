@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowWVoeJe.ui'
+## Form generated from reading UI file 'main_windowqLyUbk.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -227,6 +227,7 @@ class Ui_MainWindow(object):
         self.horizontalSliderVolume.setSizePolicy(sizePolicy)
         self.horizontalSliderVolume.setMinimumSize(QSize(150, 0))
         self.horizontalSliderVolume.setMaximumSize(QSize(200, 16777215))
+        self.horizontalSliderVolume.setMaximum(100)
         self.horizontalSliderVolume.setValue(50)
         self.horizontalSliderVolume.setOrientation(Qt.Orientation.Horizontal)
         self.horizontalSliderVolume.setTickPosition(QSlider.TickPosition.TicksBelow)
@@ -237,8 +238,8 @@ class Ui_MainWindow(object):
         self.labelVolumeValue.setObjectName(u"labelVolumeValue")
         sizePolicy1.setHeightForWidth(self.labelVolumeValue.sizePolicy().hasHeightForWidth())
         self.labelVolumeValue.setSizePolicy(sizePolicy1)
-        self.labelVolumeValue.setMinimumSize(QSize(30, 0))
-        self.labelVolumeValue.setMaximumSize(QSize(30, 16777215))
+        self.labelVolumeValue.setMinimumSize(QSize(40, 0))
+        self.labelVolumeValue.setMaximumSize(QSize(40, 16777215))
         self.labelVolumeValue.setFont(font)
 
         self.horizontalLayout_6.addWidget(self.labelVolumeValue)

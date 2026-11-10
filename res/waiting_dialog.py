@@ -32,6 +32,9 @@ class WaitingDialog(QDialog):
         layout.addWidget(self.labelTitle)
 
         self.labelMessage = QLabel(self)
+        font = self.labelMessage.font()
+        font.setPointSize(10)
+        self.labelMessage.setFont(font)
         self.labelMessage.setWordWrap(True)
         layout.addWidget(self.labelMessage)
 
@@ -52,16 +55,16 @@ class WaitingDialog(QDialog):
     def set_lost_connection_mode(self, lost_connection: bool):
         self._lost_connection = lost_connection
         if lost_connection:
-            self.labelTitle.setText("Соединение с устройством потеряно")
+            self.labelTitle.setText("Соединение потеряно")
             message = (
-                f"Устройство {self._device_name} было отключено.\n\n"
-                "Подключите его снова. Ожидание подключения..."
+                f"{self._device_name} было отключено.\n\n"
+                "Подключите его снова..."
             )
         else:
-            self.labelTitle.setText("Устройство не найдено")
+            self.labelTitle.setText("Ожидание подключения")
             message = (
-                f"Устройство {self._device_name} не найдено.\n\n"
-                "Подключите его к компьютеру. Ожидание подключения..."
+                f"{self._device_name} не найдено.\n\n"
+                "Подключите его к компьютеру..."
             )
         self.labelMessage.setText(message)
 

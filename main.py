@@ -1,10 +1,12 @@
 import logging
 from pathlib import Path
 
+import numpy as np
 import sounddevice as sd
 import soundfile as sf
 
 from PySide6.QtCore import QTimer
+from PySide6.QtGui import QActionGroup
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -39,6 +41,8 @@ class WavPlayer:
         self._samplerate = None
         self._position = 0
         self._stream = None
+        self._gain = 1.0
+        self._peak = 0.0
 
     @property
     def path_to_wav(self):
@@ -67,20 +71,44 @@ class WavPlayer:
             return 0.0
         return self._position / self._samplerate
 
+    @property
+    def gain(self):
+        return self._gain
+
+    @gain.setter
+    def gain(self, value):
+        self._gain = max(0.0, float(value))
+
+    @property
+    def peak(self):
+        return self._peak
+
+    @property
+    def clipping_risk(self):
+        return self._peak > 0.0 and self._peak * self._gain > 1.0
+
     def load(self):
         self.stop()
         self._data, self._samplerate = sf.read(
             self._path_to_wav, dtype="float32", always_2d=True
         )
         self._position = 0
-        logger.debug(f"loaded wav: {self._path_to_wav}, shape={self._data.shape}")
+        self._peak = (
+            float(np.max(np.abs(self._data))) if self._data.size else 0.0
+        )
+        logger.debug(
+            f"loaded wav: {self._path_to_wav}, "
+            f"shape={self._data.shape}, peak={self._peak:.3f}"
+        )
 
     def _callback(self, outdata, frames, time, status):
         if status:
             logger.warning(f"audio callback status: {status}")
 
         chunk = self._data[self._position:self._position + frames]
-        outdata[:len(chunk)] = chunk
+        out = outdata[:len(chunk)]
+        np.multiply(chunk, self._gain, out=out)
+        np.clip(out, -1.0, 1.0, out=out)
 
         if len(chunk) < frames:
             outdata[len(chunk):] = 0
@@ -143,8 +171,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButtonStop.clicked.connect(self.on_stop_clicked)
         self.actionExit.triggered.connect(self.close)
         self.actionAbout.triggered.connect(self.on_about_clicked)
-        self.horizontalSliderVolume.valueChanged.connect(self._on_volume_changed)
-        self.pushButtonVolumeReset.clicked.connect(self._on_volume_changed)
+        self._setup_language_indicator()
+        self.horizontalSliderVolume.setMaximum(100)
+        self.horizontalSliderVolume.valueChanged.connect(
+            self._on_volume_changed
+        )
+        self.pushButtonVolumeReset.clicked.connect(self._reset_volume)
+        self._on_volume_changed(self.horizontalSliderVolume.value())
 
         self._time_timer = QTimer(self)
         self._time_timer.setInterval(200)
@@ -167,13 +200,43 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         QTimer.singleShot(0, self._check_startup_connection)
 
-    def _on_volume_changed(self, value: int | bool):
-        """ обработка изменения уровня громкости, сброс к нормальному значению громкости через кнопку """
-        if isinstance(value, bool):
-            value = 50
-            self.horizontalSliderVolume.setValue(value)
-
+    def _on_volume_changed(self, value: int):
+        """ обработка изменения уровня громкости """
         self.labelVolumeValue.setText(f"{value}%")
+        self._player.gain = value / 50.0
+        self._update_volume_warning()
+
+    def _reset_volume(self, _checked: bool = False):
+        """ сброс громкости к нормальному значению (50%) """
+        self.horizontalSliderVolume.setValue(50)
+
+    def _update_volume_warning(self):
+        """ предупреждение о возможном ограничении сигнала """
+        if not self._player.clipping_risk:
+            self.labelVolumeValue.setStyleSheet("")
+            self.labelVolumeValue.setToolTip("")
+            return
+
+        safe_percent = 0
+        if self._player.peak > 0:
+            safe_percent = min(100, int(50.0 / self._player.peak))
+
+        self.labelVolumeValue.setStyleSheet("color: #e74c3c;")
+        self.labelVolumeValue.setToolTip(
+            self.tr(
+                "Уровень сигнала может быть ограничен (клиппинг). "
+                "Без ограничения: до %1%."
+            ).arg(safe_percent)
+        )
+
+    def _setup_language_indicator(self):
+        """ визуальная отметка выбранного языка в меню """
+        self._language_group = QActionGroup(self)
+        self._language_group.setExclusive(True)
+        for action in (self.actionRus, self.actionEng):
+            action.setCheckable(True)
+            self._language_group.addAction(action)
+        self.actionRus.setChecked(True)
 
     def set_debug_mode(self, state: bool):
         """
@@ -311,7 +374,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             border: 1px solid #7f8c8d;
         """
         )
-        state = "подключен" if connected else "не подключен"
+        state = self.tr("подключен") if connected else self.tr("не подключен")
         self.labelStatePlayer.setToolTip(f"{DEVICE_NAME} {state}")
 
     def _update_controls_state(self):
@@ -330,9 +393,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         path, _ = QFileDialog.getOpenFileName(
             self,
-            "Выберите WAV файл для воспроизведения",
+            self.tr("Выберите WAV файл для воспроизведения"),
             "",
-            "WAV файлы (*.wav);;Все файлы (*)",
+            self.tr("WAV файлы (*.wav);;Все файлы (*)"),
             options=QFileDialog.Option.DontResolveSymlinks
         )
         if not path:
@@ -351,8 +414,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._update_controls_state()
             QMessageBox.critical(
                 self,
-                "Ошибка",
-                f"Не удалось открыть WAV-файл:\n{exc}",
+                self.tr("Ошибка"),
+                self.tr("Не удалось открыть WAV-файл:\n%1").arg(str(exc)),
             )
             return
 
@@ -361,6 +424,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.update_time_counter()
         self.groupBox.setEnabled(True)
         self._update_controls_state()
+        self._update_volume_warning()
 
     def update_time_counter(self):
         duration = self._player.duration
@@ -391,8 +455,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if device is None:
             QMessageBox.warning(
                 self,
-                "Устройство не найдено",
-                f"Устройство {DEVICE_NAME} не найдено.",
+                self.tr("Устройство не найдено"),
+                self.tr("Устройство %1 не найдено.").arg(DEVICE_NAME),
             )
             return
 
@@ -405,8 +469,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._update_controls_state()
             QMessageBox.critical(
                 self,
-                "Ошибка воспроизведения",
-                f"Не удалось запустить воспроизведение:\n{exc}",
+                self.tr("Ошибка воспроизведения"),
+                self.tr("Не удалось запустить воспроизведение:\n%1").arg(
+                    str(exc)
+                ),
             )
             return
 
@@ -419,10 +485,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         message_box.setWindowTitle(title)
         message_box.setText(text)
         yes_button = message_box.addButton(
-            "Да", QMessageBox.ButtonRole.YesRole
+            self.tr("Да"), QMessageBox.ButtonRole.YesRole
         )
         no_button = message_box.addButton(
-            "Нет", QMessageBox.ButtonRole.NoRole
+            self.tr("Нет"), QMessageBox.ButtonRole.NoRole
         )
         message_box.setDefaultButton(no_button)
         message_box.exec()
@@ -430,14 +496,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def _confirm_stop(self) -> bool:
         return self._ask_confirmation(
-            "Остановка воспроизведения",
-            "Идёт воспроизведение файла. Хотите остановить?",
+            self.tr("Остановка воспроизведения"),
+            self.tr("Идёт воспроизведение файла. Хотите остановить?"),
         )
 
     def _confirm_exit(self) -> bool:
         return self._ask_confirmation(
-            "Выход из программы",
-            "Идёт воспроизведение аудиосигнала. Вы действительно хотите выйти?",
+            self.tr("Выход из программы"),
+            self.tr(
+                "Идёт воспроизведение аудиосигнала. "
+                "Вы действительно хотите выйти?"
+            ),
         )
 
     def closeEvent(self, event):
