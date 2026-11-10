@@ -6,7 +6,7 @@
 /output
 *.iss
 AstimWavPlayer.iss
-AstimWavPlayer.dist
+/AstimWavPlayer.dist
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
