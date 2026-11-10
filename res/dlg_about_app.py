@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'dlg_about_app.ui'
+## Form generated from reading UI file 'dlg_about_appEjbdrm.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -23,7 +23,7 @@ class Ui_DlgAboutApp(object):
     def setupUi(self, DlgAboutApp):
         if not DlgAboutApp.objectName():
             DlgAboutApp.setObjectName(u"DlgAboutApp")
-        DlgAboutApp.resize(478, 350)
+        DlgAboutApp.resize(511, 361)
         self.horizontalLayout_2 = QHBoxLayout(DlgAboutApp)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout = QHBoxLayout()
@@ -109,6 +109,12 @@ class Ui_DlgAboutApp(object):
 
         self.verticalLayout.addWidget(self.label_3)
 
+        self.labelMcsSite = QLabel(DlgAboutApp)
+        self.labelMcsSite.setObjectName(u"labelMcsSite")
+        self.labelMcsSite.setStyleSheet(u"https://mks.ru/ru")
+
+        self.verticalLayout.addWidget(self.labelMcsSite)
+
         self.label_4 = QLabel(DlgAboutApp)
         self.label_4.setObjectName(u"label_4")
 
@@ -136,6 +142,7 @@ class Ui_DlgAboutApp(object):
         self.labelVer.setText(QCoreApplication.translate("DlgAboutApp", u"\u0412\u0435\u0440\u0441\u0438\u044f:", None))
         self.labelVerValue.setText(QCoreApplication.translate("DlgAboutApp", u"v0.1.0", None))
         self.label_3.setText(QCoreApplication.translate("DlgAboutApp", u"\u00a9 2026 \u041e\u041e\u041e \"\u041c\u0435\u0434\u0438\u0446\u0438\u043d\u0441\u043a\u0438\u0435 \u041a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440\u043d\u044b\u0435 \u0441\u0438\u0441\u0442\u0435\u043c\u044b\"", None))
+        self.labelMcsSite.setText(QCoreApplication.translate("DlgAboutApp", u"...", None))
         self.label_4.setText(QCoreApplication.translate("DlgAboutApp", u"\u041b\u0438\u0446\u0435\u043d\u0437\u0438\u044f: MIT License", None))
     # retranslateUi
 

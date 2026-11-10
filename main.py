@@ -143,6 +143,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButtonStop.clicked.connect(self.on_stop_clicked)
         self.actionExit.triggered.connect(self.close)
         self.actionAbout.triggered.connect(self.on_about_clicked)
+        self.horizontalSliderVolume.valueChanged.connect(self._on_volume_changed)
+        self.pushButtonVolumeReset.clicked.connect(self._on_volume_changed)
 
         self._time_timer = QTimer(self)
         self._time_timer.setInterval(200)
@@ -164,6 +166,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._update_controls_state()
 
         QTimer.singleShot(0, self._check_startup_connection)
+
+    def _on_volume_changed(self, value: int | bool):
+        """ обработка изменения уровня громкости, сброс к нормальному значению громкости через кнопку """
+        if isinstance(value, bool):
+            value = 50
+            self.horizontalSliderVolume.setValue(value)
+
+        self.labelVolumeValue.setText(f"{value}%")
 
     def set_debug_mode(self, state: bool):
         """
@@ -359,7 +369,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         total = format_time(duration)
 
         self.RecPlaybackBar.setValue(level)
-        self.labelTimeCounter.setText(f"[{current}/{total}]")
+        self.labelTimeCounter.setText(f"{current} / {total}")
 
         if self._player.opened and not self._player.active:
             self._time_timer.stop()
