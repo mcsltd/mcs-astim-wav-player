@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowgfuEGj.ui'
+## Form generated from reading UI file 'main_windowngEDEF.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -35,6 +35,10 @@ class Ui_MainWindow(object):
         self.actionExit.setObjectName(u"actionExit")
         self.actionAbout = QAction(MainWindow)
         self.actionAbout.setObjectName(u"actionAbout")
+        self.actionRus = QAction(MainWindow)
+        self.actionRus.setObjectName(u"actionRus")
+        self.actionEng = QAction(MainWindow)
+        self.actionEng.setObjectName(u"actionEng")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_2 = QVBoxLayout(self.centralwidget)
@@ -202,6 +206,8 @@ class Ui_MainWindow(object):
         self.menuFile.setObjectName(u"menuFile")
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
+        self.menuLang = QMenu(self.menu)
+        self.menuLang.setObjectName(u"menuLang")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -210,7 +216,10 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menu.menuAction())
         self.menuFile.addAction(self.actionExit)
+        self.menu.addAction(self.menuLang.menuAction())
         self.menu.addAction(self.actionAbout)
+        self.menuLang.addAction(self.actionRus)
+        self.menuLang.addAction(self.actionEng)
 
         self.retranslateUi(MainWindow)
 
@@ -221,6 +230,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"AstimWavPlayer", None))
         self.actionExit.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0445\u043e\u0434", None))
         self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"\u041e \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435...", None))
+        self.actionRus.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0443\u0441\u0441\u043a\u0438\u0439", None))
+        self.actionEng.setText(QCoreApplication.translate("MainWindow", u"\u0410\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439", None))
         self.labelDevicePlayer.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0438\u0433\u0440\u044b\u0432\u0430\u0442\u0435\u043b\u044c", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0444\u0430\u0439\u043b\u0430", None))
         self.pushButtonSelectWav.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0440\u0430\u0442\u044c WAV", None))
@@ -233,5 +244,6 @@ class Ui_MainWindow(object):
         self.labelTimeCounter.setText(QCoreApplication.translate("MainWindow", u"[00:00/00:00]", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043c\u043e\u0449\u044c", None))
+        self.menuLang.setTitle(QCoreApplication.translate("MainWindow", u"\u042f\u0437\u044b\u043a", None))
     # retranslateUi
 

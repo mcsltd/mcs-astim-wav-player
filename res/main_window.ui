@@ -290,6 +290,14 @@
     <property name="title">
      <string>Помощь</string>
     </property>
+    <widget class="QMenu" name="menuLang">
+     <property name="title">
+      <string>Язык</string>
+     </property>
+     <addaction name="actionRus"/>
+     <addaction name="actionEng"/>
+    </widget>
+    <addaction name="menuLang"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
@@ -304,6 +312,16 @@
   <action name="actionAbout">
    <property name="text">
     <string>О программе...</string>
+   </property>
+  </action>
+  <action name="actionRus">
+   <property name="text">
+    <string>Русский</string>
+   </property>
+  </action>
+  <action name="actionEng">
+   <property name="text">
+    <string>Английский</string>
    </property>
   </action>
  </widget>
