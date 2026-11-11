@@ -1,3 +1,3 @@
 DEVICE_NAME = "MCS A-Stim R1.1"
 DEBUG = False
-VERSION = "v0.1.0"
+VERSION = "v0.1.1"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowgfuEGj.ui'
+## Form generated from reading UI file 'main_windowqLyUbk.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.12.0
 ##
@@ -19,7 +19,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QComboBox, QFormLayout, QGroupBox,
     QHBoxLayout, QLabel, QLineEdit, QMainWindow,
     QMenu, QMenuBar, QProgressBar, QPushButton,
-    QSizePolicy, QSpacerItem, QStatusBar, QVBoxLayout,
+    QSizePolicy, QSlider, QSpacerItem, QVBoxLayout,
     QWidget)
 import res.resources_rc
 
@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(495, 286)
+        MainWindow.resize(661, 309)
         icon = QIcon()
         icon.addFile(u":/images/icon.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
@@ -35,6 +35,10 @@ class Ui_MainWindow(object):
         self.actionExit.setObjectName(u"actionExit")
         self.actionAbout = QAction(MainWindow)
         self.actionAbout.setObjectName(u"actionAbout")
+        self.actionRus = QAction(MainWindow)
+        self.actionRus.setObjectName(u"actionRus")
+        self.actionEng = QAction(MainWindow)
+        self.actionEng.setObjectName(u"actionEng")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_2 = QVBoxLayout(self.centralwidget)
@@ -43,6 +47,8 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.formLayout = QFormLayout()
         self.formLayout.setObjectName(u"formLayout")
+        self.formLayout.setHorizontalSpacing(10)
+        self.formLayout.setVerticalSpacing(10)
         self.labelDevicePlayer = QLabel(self.centralwidget)
         self.labelDevicePlayer.setObjectName(u"labelDevicePlayer")
         font = QFont()
@@ -191,26 +197,81 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.groupBox)
 
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_5.addItem(self.horizontalSpacer_3)
+
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.pushButtonVolumeReset = QPushButton(self.centralwidget)
+        self.pushButtonVolumeReset.setObjectName(u"pushButtonVolumeReset")
+        sizePolicy.setHeightForWidth(self.pushButtonVolumeReset.sizePolicy().hasHeightForWidth())
+        self.pushButtonVolumeReset.setSizePolicy(sizePolicy)
+        self.pushButtonVolumeReset.setMaximumSize(QSize(30, 30))
+        self.pushButtonVolumeReset.setStyleSheet(u"QPushButton {\n"
+"    background-color: transparent;\n"
+"    border: none;\n"
+"}")
+        icon3 = QIcon()
+        icon3.addFile(u":/images/volume.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.pushButtonVolumeReset.setIcon(icon3)
+        self.pushButtonVolumeReset.setIconSize(QSize(30, 30))
+
+        self.horizontalLayout_6.addWidget(self.pushButtonVolumeReset)
+
+        self.horizontalSliderVolume = QSlider(self.centralwidget)
+        self.horizontalSliderVolume.setObjectName(u"horizontalSliderVolume")
+        sizePolicy.setHeightForWidth(self.horizontalSliderVolume.sizePolicy().hasHeightForWidth())
+        self.horizontalSliderVolume.setSizePolicy(sizePolicy)
+        self.horizontalSliderVolume.setMinimumSize(QSize(150, 0))
+        self.horizontalSliderVolume.setMaximumSize(QSize(200, 16777215))
+        self.horizontalSliderVolume.setMaximum(100)
+        self.horizontalSliderVolume.setValue(50)
+        self.horizontalSliderVolume.setOrientation(Qt.Orientation.Horizontal)
+        self.horizontalSliderVolume.setTickPosition(QSlider.TickPosition.TicksBelow)
+
+        self.horizontalLayout_6.addWidget(self.horizontalSliderVolume)
+
+        self.labelVolumeValue = QLabel(self.centralwidget)
+        self.labelVolumeValue.setObjectName(u"labelVolumeValue")
+        sizePolicy1.setHeightForWidth(self.labelVolumeValue.sizePolicy().hasHeightForWidth())
+        self.labelVolumeValue.setSizePolicy(sizePolicy1)
+        self.labelVolumeValue.setMinimumSize(QSize(40, 0))
+        self.labelVolumeValue.setMaximumSize(QSize(40, 16777215))
+        self.labelVolumeValue.setFont(font)
+
+        self.horizontalLayout_6.addWidget(self.labelVolumeValue)
+
+
+        self.horizontalLayout_5.addLayout(self.horizontalLayout_6)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
+
 
         self.verticalLayout_2.addLayout(self.verticalLayout)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 495, 33))
+        self.menubar.setGeometry(QRect(0, 0, 661, 33))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
+        self.menuLang = QMenu(self.menu)
+        self.menuLang.setObjectName(u"menuLang")
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menu.menuAction())
         self.menuFile.addAction(self.actionExit)
+        self.menu.addAction(self.menuLang.menuAction())
         self.menu.addAction(self.actionAbout)
+        self.menuLang.addAction(self.actionRus)
+        self.menuLang.addAction(self.actionEng)
 
         self.retranslateUi(MainWindow)
 
@@ -221,17 +282,25 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"AstimWavPlayer", None))
         self.actionExit.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0445\u043e\u0434", None))
         self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"\u041e \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435...", None))
+        self.actionRus.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0443\u0441\u0441\u043a\u0438\u0439", None))
+        self.actionEng.setText(QCoreApplication.translate("MainWindow", u"\u0410\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439", None))
         self.labelDevicePlayer.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0438\u0433\u0440\u044b\u0432\u0430\u0442\u0435\u043b\u044c", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0444\u0430\u0439\u043b\u0430", None))
-        self.pushButtonSelectWav.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0440\u0430\u0442\u044c WAV", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"WAV-\u0444\u0430\u0439\u043b", None))
+        self.pushButtonSelectWav.setText(QCoreApplication.translate("MainWindow", u"\u0412\u044b\u0431\u0440\u0430\u0442\u044c...", None))
         self.labelPlayer.setText(QCoreApplication.translate("MainWindow", u"MCS A-stim R.1.1", None))
         self.labelStatePlayer.setText("")
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u0412\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u0435", None))
         self.pushButtonStart.setText(QCoreApplication.translate("MainWindow", u"\u0421\u0442\u0430\u0440\u0442", None))
         self.pushButtonStop.setText(QCoreApplication.translate("MainWindow", u"\u0421\u0442\u043e\u043f", None))
         self.RecPlaybackBar.setFormat("")
-        self.labelTimeCounter.setText(QCoreApplication.translate("MainWindow", u"[00:00/00:00]", None))
+        self.labelTimeCounter.setText(QCoreApplication.translate("MainWindow", u"00:00 / 00:00", None))
+#if QT_CONFIG(tooltip)
+        self.pushButtonVolumeReset.setToolTip(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0436\u043c\u0438\u0442\u0435, \u0447\u0442\u043e\u0431\u044b \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c 50%", None))
+#endif // QT_CONFIG(tooltip)
+        self.pushButtonVolumeReset.setText("")
+        self.labelVolumeValue.setText(QCoreApplication.translate("MainWindow", u"50%", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043c\u043e\u0449\u044c", None))
+        self.menuLang.setTitle(QCoreApplication.translate("MainWindow", u"\u042f\u0437\u044b\u043a", None))
     # retranslateUi
 
