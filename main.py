@@ -6,7 +6,7 @@ import numpy as np
 import sounddevice as sd
 import soundfile as sf
 
-from PySide6.QtCore import QTimer, QTranslator
+from PySide6.QtCore import QTimer, QTranslator, QSettings
 from PySide6.QtGui import QActionGroup
 from PySide6.QtWidgets import (
     QApplication,
@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
     QStyleFactory,
 )
 
-from config import DEBUG, DEVICE_NAME, LANGUAGE, VERSION
+from config import DEBUG, DEVICE_NAME, VERSION
 from res.main_window import Ui_MainWindow
 from res.waiting_dialog import WaitingDialog
 from ui.dlg_about_app import DlgAboutApp
@@ -54,7 +54,6 @@ class WavPlayer:
         self._position = 0
         self._stream = None
         self._gain = 1.0
-        self._peak = 0.0
 
     @property
     def path_to_wav(self):
@@ -91,26 +90,15 @@ class WavPlayer:
     def gain(self, value):
         self._gain = max(0.0, float(value))
 
-    @property
-    def peak(self):
-        return self._peak
-
-    @property
-    def clipping_risk(self):
-        return self._peak > 0.0 and self._peak * self._gain > 1.0
-
     def load(self):
         self.stop()
         self._data, self._samplerate = sf.read(
             self._path_to_wav, dtype="float32", always_2d=True
         )
         self._position = 0
-        self._peak = (
-            float(np.max(np.abs(self._data))) if self._data.size else 0.0
-        )
         logger.debug(
             f"loaded wav: {self._path_to_wav}, "
-            f"shape={self._data.shape}, peak={self._peak:.3f}"
+            f"shape={self._data.shape}"
         )
 
     def _callback(self, outdata, frames, time, status):
@@ -120,7 +108,7 @@ class WavPlayer:
         chunk = self._data[self._position:self._position + frames]
         out = outdata[:len(chunk)]
         np.multiply(chunk, self._gain, out=out)
-        np.clip(out, -1.0, 1.0, out=out)
+        # np.clip(out, -1.0, 1.0, out=out)
 
         if len(chunk) < frames:
             outdata[len(chunk):] = 0
@@ -170,11 +158,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setFixedSize(self.size())
 
-        self._debug = False
+        self._settings = QSettings("MCS.ltd", "AstimWavPlayer")
+
+        self._debug = False # переключение режимов отладки
         self._astim_connected = False
         self._wav_loaded = False
-        self._pa_devices_dirty = False
+        self._pa_devices_dirty = False  # флаг обновления списка устройств
         self._waiting_dialog = None
+        self._last_dir = None
+        self._translator = QTranslator(self)
+        self._language = LANG_RU
+        self._load_settings()
 
         self._player = WavPlayer()
 
@@ -183,8 +177,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButtonStop.clicked.connect(self.on_stop_clicked)
         self.actionExit.triggered.connect(self.close)
         self.actionAbout.triggered.connect(self.on_about_clicked)
-        self._translator = QTranslator(self)
-        self._language = LANG_RU
+
         self._setup_language_indicator()
         self._apply_startup_language()
         self.horizontalSliderVolume.setMaximum(100)
@@ -215,34 +208,43 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         QTimer.singleShot(0, self._check_startup_connection)
 
+    def _load_settings(self):
+        """
+        загрузка параметров (при первом запуске - начальная
+        инициализация значениями по умолчанию):
+        _last_dir - последнее место где лежали WAV файлы
+        _language - язык интерфейса (по умолчанию LANG_EN)
+        """
+        if not self._settings.contains("language"):
+            self._settings.setValue("language", LANG_EN)
+        language = self._settings.value("language", "", type=str)
+        self._language = language if language in (LANG_RU, LANG_EN) else LANG_EN
+
+        if not self._settings.contains("last_dir"):
+            self._settings.setValue("last_dir", "")
+        last_dir = self._settings.value("last_dir", "", type=str)
+        self._last_dir = last_dir if last_dir and Path(last_dir).is_dir() else None
+
+    def _save_settings(self):
+        """
+        сохранение параметров:
+        _last_dir - последнее место где лежали WAV файлы
+        _language - язык интерфейса
+        """
+        self._settings.setValue("language", self._language)
+        self._settings.setValue(
+            "last_dir", str(self._last_dir) if self._last_dir else ""
+        )
+        self._settings.sync()
+
     def _on_volume_changed(self, value: int):
         """ обработка изменения уровня громкости """
         self.labelVolumeValue.setText(f"{value}%")
         self._player.gain = value / 50.0
-        self._update_volume_warning()
 
     def _reset_volume(self, _checked: bool = False):
         """ сброс громкости к нормальному значению (50%) """
         self.horizontalSliderVolume.setValue(50)
-
-    def _update_volume_warning(self):
-        """ предупреждение о возможном ограничении сигнала """
-        if not self._player.clipping_risk:
-            self.labelVolumeValue.setStyleSheet("")
-            self.labelVolumeValue.setToolTip("")
-            return
-
-        safe_percent = 0
-        if self._player.peak > 0:
-            safe_percent = min(100, int(50.0 / self._player.peak))
-
-        self.labelVolumeValue.setStyleSheet("color: #e74c3c;")
-        self.labelVolumeValue.setToolTip(
-            self.tr(
-                "Уровень сигнала может быть ограничен (клиппинг). "
-                "Без ограничения: до %1%."
-            ).replace("%1", str(safe_percent))
-        )
 
     def _setup_language_indicator(self):
         """ визуальная отметка выбранного языка в меню """
@@ -255,9 +257,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionEng.triggered.connect(lambda: self._switch_language(LANG_EN))
 
     def _apply_startup_language(self):
-        """ установка языка интерфейса при запуске (из config) """
-        if LANGUAGE == LANG_EN:
-            self._load_english_translation()
+        """ установка языка интерфейса при запуске (из QSettings) """
+        if self._language == LANG_EN:
+            if not self._load_english_translation():
+                self._language = LANG_RU
         self._set_language_checked(self._language)
         if self._language == LANG_EN:
             self.retranslateUi(self)
@@ -418,6 +421,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def _quit_application(self):
         app = QApplication.instance()
         if app is not None:
+            self._save_settings()
             app.quit()
 
     def _close_waiting_dialog(self):
@@ -457,10 +461,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             logger.warning("cannot change wav file during playback")
             return
 
+        path_to_dir = self._last_dir if self._last_dir else ""
         path, _ = QFileDialog.getOpenFileName(
             self,
             self.tr("Выберите WAV файл для воспроизведения"),
-            "",
+            path_to_dir,
             self.tr("WAV файлы (*.wav);;Все файлы (*)"),
             options=QFileDialog.Option.DontResolveSymlinks
         )
@@ -468,6 +473,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 
         path_to_wav = Path(path)
+        self._last_dir = path_to_wav.parent
         logger.debug(f"WAV file: {path_to_wav.name}")
         self.lineEditPathToWav.setText(path_to_wav.name)
 
@@ -492,7 +498,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.update_time_counter()
         self.groupBox.setEnabled(True)
         self._update_controls_state()
-        self._update_volume_warning()
 
     def update_time_counter(self):
         duration = self._player.duration
@@ -585,6 +590,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 event.ignore()
                 return
             self._stop_playback()
+        self._save_settings()
         super().closeEvent(event)
 
     def _stop_playback(self):
@@ -602,6 +608,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """ обработка нажатия кнопки меню О программе..."""
         dlg = DlgAboutApp(parent=self, version=VERSION)
         dlg.exec()
+
 
 def setup_logging():
     logging.basicConfig(

@@ -51,91 +51,86 @@ MCS A-stim R1.1</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="main.py" line="242"/>
-        <source>Уровень сигнала может быть ограничен (клиппинг). Без ограничения: до %1%.</source>
-        <translation>The signal level may be limited (clipping). Without limiting: up to %1%.</translation>
-    </message>
-    <message>
-        <location filename="main.py" line="443"/>
+        <location filename="main.py" line="447"/>
         <source>подключен</source>
         <translation>connected</translation>
     </message>
     <message>
-        <location filename="main.py" line="443"/>
+        <location filename="main.py" line="447"/>
         <source>не подключен</source>
         <translation>not connected</translation>
     </message>
     <message>
-        <location filename="main.py" line="462"/>
+        <location filename="main.py" line="467"/>
         <source>Выберите WAV файл для воспроизведения</source>
         <translation>Select a WAV file to play</translation>
     </message>
     <message>
-        <location filename="main.py" line="464"/>
+        <location filename="main.py" line="469"/>
         <source>WAV файлы (*.wav);;Все файлы (*)</source>
         <translation>WAV files (*.wav);;All files (*)</translation>
     </message>
     <message>
-        <location filename="main.py" line="483"/>
+        <location filename="main.py" line="489"/>
         <source>Ошибка</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="main.py" line="484"/>
+        <location filename="main.py" line="490"/>
         <source>Не удалось открыть WAV-файл:
 %1</source>
         <translation>Could not open WAV file:
 %1</translation>
     </message>
     <message>
-        <location filename="main.py" line="526"/>
+        <location filename="main.py" line="531"/>
         <source>Устройство не найдено</source>
         <translation>Device not found</translation>
     </message>
     <message>
-        <location filename="main.py" line="527"/>
+        <location filename="main.py" line="532"/>
         <source>Устройство %1 не найдено.</source>
         <translation>Device %1 not found.</translation>
     </message>
     <message>
-        <location filename="main.py" line="542"/>
+        <location filename="main.py" line="547"/>
         <source>Ошибка воспроизведения</source>
         <translation>Playback error</translation>
     </message>
     <message>
-        <location filename="main.py" line="543"/>
+        <location filename="main.py" line="548"/>
         <source>Не удалось запустить воспроизведение:
 %1</source>
         <translation>Unable to start playback:
 %1</translation>
     </message>
     <message>
-        <location filename="main.py" line="558"/>
+        <location filename="main.py" line="563"/>
         <source>Да</source>
         <translation>Yes</translation>
     </message>
     <message>
-        <location filename="main.py" line="561"/>
+        <location filename="main.py" line="566"/>
         <source>Нет</source>
         <translation>No</translation>
     </message>
     <message>
-        <location filename="main.py" line="569"/>
+        <location filename="main.py" line="574"/>
         <source>Остановка воспроизведения</source>
         <translation>Playback stopped</translation>
     </message>
     <message>
-        <location filename="main.py" line="570"/>
+        <location filename="main.py" line="575"/>
         <source>Идёт воспроизведение файла. Хотите остановить?</source>
         <translation>A file is playing. Do you want to stop it?</translation>
     </message>
     <message>
-        <location filename="main.py" line="575"/>
+        <location filename="main.py" line="580"/>
         <source>Выход из программы</source>
         <translation>Exit the program</translation>
     </message>
     <message>
-        <location filename="main.py" line="577"/>
+        <location filename="main.py" line="582"/>
         <source>Идёт воспроизведение аудиосигнала. Вы действительно хотите выйти?</source>
         <translation>Audio is currently playing. Are you sure you want to exit?</translation>
     </message>

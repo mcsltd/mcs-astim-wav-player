@@ -11,7 +11,7 @@ Application for playing WAV files on the MCS A-stim R 1.1 device.
 - Waiting for the A-stim connection with the option to exit the application.
 - Automatic playback stop when the connection to the device is lost.
 - Display of the current position and the total file duration.
-- Volume control with clipping warning and quick reset to 50%.
+- Volume control with quick reset to 50%.
 - Blocking the WAV file change during playback.
 - Confirmation of playback stop and application exit.
 - Russian and English interface, switchable at runtime.
@@ -69,9 +69,8 @@ The application is configured through the `config.py` file:
 | `DEVICE_NAME` | Name of the A-stim device | `"MCS A-Stim R1.1"` |
 | `DEBUG` | Debug mode: shows the output device selector and allows playback without a connected A-stim | `True` |
 | `VERSION` | Application version | `"v0.1.1"` |
-| `LANGUAGE` | Interface language: `"ru"` — Russian, `"en"` — English | `"ru"` |
 
-The interface language can also be switched at runtime via the **Help → Language** menu (Russian / English). The choice made in the menu applies until the application is restarted; the language at startup is determined by the `LANGUAGE` setting.
+The interface language is English on the first launch. It can be switched at runtime via the **Help → Language** menu (Russian / English); the selected language and the last opened folder are stored in the system settings (QSettings) and restored on the next launch.
 
 ## Device requirements
 
