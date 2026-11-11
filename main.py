@@ -96,14 +96,17 @@ class WavPlayer:
             self._path_to_wav, dtype="float32", always_2d=True
         )
         self._position = 0
-        logger.debug(
-            f"loaded wav: {self._path_to_wav}, "
-            f"shape={self._data.shape}"
-        )
+        # logger.debug(f"loaded wav: {self._path_to_wav}, shape={self._data.shape}")
 
     def _callback(self, outdata, frames, time, status):
         if status:
             logger.warning(f"audio callback status: {status}")
+
+        if self._position == 0:
+            logger.debug(
+                "first block: "
+                f"{(time.outputBufferDacTime - time.currentTime) * 1000:.1f} ms to DAC"
+            )
 
         chunk = self._data[self._position:self._position + frames]
         out = outdata[:len(chunk)]
@@ -140,9 +143,11 @@ class WavPlayer:
             channels=self._data.shape[1],
             dtype="float32",
             callback=self._callback,
-            extra_settings=extra
+            extra_settings=extra,
+            latency="low"
         )
         self._stream.start()
+        logger.info(f"output latency: {self._stream.latency * 1000:.1f} ms")
 
     def stop(self):
         if self._stream is not None:
@@ -612,7 +617,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 def setup_logging():
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format="%(asctime)-15s %(name)-8s %(levelname)s: %(message)s",
         force=True
     )
