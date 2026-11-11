@@ -15,7 +15,7 @@ class WaitingDialog(QDialog):
         self._device_name = device_name
         self._lost_connection = lost_connection
 
-        self.setWindowTitle("Ожидание A-Stim")
+        self.setWindowTitle(self.tr("Ожидание A-Stim"))
         self.setModal(True)
         self.setMinimumWidth(420)
         self.setWindowFlag(Qt.WindowType.WindowContextHelpButtonHint, False)
@@ -45,7 +45,7 @@ class WaitingDialog(QDialog):
 
         buttons = QHBoxLayout()
         buttons.addStretch()
-        self.pushButtonExit = QPushButton("Выход", self)
+        self.pushButtonExit = QPushButton(self.tr("Выход"), self)
         self.pushButtonExit.clicked.connect(self._on_exit_clicked)
         buttons.addWidget(self.pushButtonExit)
         layout.addLayout(buttons)
@@ -55,18 +55,22 @@ class WaitingDialog(QDialog):
     def set_lost_connection_mode(self, lost_connection: bool):
         self._lost_connection = lost_connection
         if lost_connection:
-            self.labelTitle.setText("Соединение потеряно")
-            message = (
-                f"{self._device_name} было отключено.\n\n"
-                "Подключите его снова..."
-            )
+            self.labelTitle.setText(self.tr("Соединение потеряно"))
+            message = self.tr(
+                "%1 было отключено.\n\nПодключите его снова..."
+            ).replace("%1", self._device_name)
         else:
-            self.labelTitle.setText("Ожидание подключения")
-            message = (
-                f"{self._device_name} не найдено.\n\n"
-                "Подключите его к компьютеру..."
-            )
+            self.labelTitle.setText(self.tr("Ожидание подключения"))
+            message = self.tr(
+                "%1 не найдено.\n\nПодключите его к компьютеру..."
+            ).replace("%1", self._device_name)
         self.labelMessage.setText(message)
+
+    def retranslate(self):
+        """ обновление текстов диалога после смены языка """
+        self.setWindowTitle(self.tr("Ожидание A-Stim"))
+        self.pushButtonExit.setText(self.tr("Выход"))
+        self.set_lost_connection_mode(self._lost_connection)
 
     def _on_exit_clicked(self):
         self.reject()

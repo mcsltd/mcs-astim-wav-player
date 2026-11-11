@@ -1,11 +1,12 @@
 import logging
+import sys
 from pathlib import Path
 
 import numpy as np
 import sounddevice as sd
 import soundfile as sf
 
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, QTranslator
 from PySide6.QtGui import QActionGroup
 from PySide6.QtWidgets import (
     QApplication,
@@ -15,7 +16,7 @@ from PySide6.QtWidgets import (
     QStyleFactory,
 )
 
-from config import DEBUG, DEVICE_NAME, VERSION
+from config import DEBUG, DEVICE_NAME, LANGUAGE, VERSION
 from res.main_window import Ui_MainWindow
 from res.waiting_dialog import WaitingDialog
 from ui.dlg_about_app import DlgAboutApp
@@ -27,6 +28,17 @@ from utils.device_monitor import (
 )
 
 logger = logging.getLogger(__name__)
+
+LANG_RU = "ru"
+LANG_EN = "en"
+TRANSLATION_FILE_EN = "app_eng.qm"
+
+
+def translations_dir() -> Path:
+    """ каталог с файлами переводов """
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parent
 
 def format_time(seconds):
     seconds = max(0, int(seconds))
@@ -171,7 +183,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButtonStop.clicked.connect(self.on_stop_clicked)
         self.actionExit.triggered.connect(self.close)
         self.actionAbout.triggered.connect(self.on_about_clicked)
+        self._translator = QTranslator(self)
+        self._language = LANG_RU
         self._setup_language_indicator()
+        self._apply_startup_language()
         self.horizontalSliderVolume.setMaximum(100)
         self.horizontalSliderVolume.valueChanged.connect(
             self._on_volume_changed
@@ -226,7 +241,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.tr(
                 "Уровень сигнала может быть ограничен (клиппинг). "
                 "Без ограничения: до %1%."
-            ).arg(safe_percent)
+            ).replace("%1", str(safe_percent))
         )
 
     def _setup_language_indicator(self):
@@ -236,7 +251,58 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for action in (self.actionRus, self.actionEng):
             action.setCheckable(True)
             self._language_group.addAction(action)
-        self.actionRus.setChecked(True)
+        self.actionRus.triggered.connect(lambda: self._switch_language(LANG_RU))
+        self.actionEng.triggered.connect(lambda: self._switch_language(LANG_EN))
+
+    def _apply_startup_language(self):
+        """ установка языка интерфейса при запуске (из config) """
+        if LANGUAGE == LANG_EN:
+            self._load_english_translation()
+        self._set_language_checked(self._language)
+        if self._language == LANG_EN:
+            self.retranslateUi(self)
+
+    def _load_english_translation(self) -> bool:
+        """ загрузка и установка английского перевода """
+        if self._translator.load(
+            str(translations_dir() / TRANSLATION_FILE_EN)
+        ):
+            QApplication.instance().installTranslator(self._translator)
+            self._language = LANG_EN
+            return True
+        logger.warning(f"failed to load translation file: {TRANSLATION_FILE_EN}")
+        return False
+
+    def _switch_language(self, lang: str):
+        """ переключение языка интерфейса """
+        if lang == self._language:
+            return
+
+        if lang == LANG_EN:
+            if not self._load_english_translation():
+                self._set_language_checked(self._language)
+                return
+        else:
+            QApplication.instance().removeTranslator(self._translator)
+            self._language = LANG_RU
+
+        self.retranslateUi(self)
+        self._retranslate_dynamic_texts()
+
+    def _set_language_checked(self, lang: str):
+        """ отметка выбранного языка в меню """
+        if lang == LANG_EN:
+            self.actionEng.setChecked(True)
+        else:
+            self.actionRus.setChecked(True)
+
+    def _retranslate_dynamic_texts(self):
+        """ обновление строк, задаваемых из кода, после смены языка """
+        self._on_volume_changed(self.horizontalSliderVolume.value())
+        self.update_time_counter()
+        self.set_astim_connected(self._astim_connected)
+        if self._waiting_dialog is not None:
+            self._waiting_dialog.retranslate()
 
     def set_debug_mode(self, state: bool):
         """
@@ -415,7 +481,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             QMessageBox.critical(
                 self,
                 self.tr("Ошибка"),
-                self.tr("Не удалось открыть WAV-файл:\n%1").arg(str(exc)),
+                self.tr("Не удалось открыть WAV-файл:\n%1").replace(
+                    "%1", str(exc)
+                ),
             )
             return
 
@@ -456,7 +524,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             QMessageBox.warning(
                 self,
                 self.tr("Устройство не найдено"),
-                self.tr("Устройство %1 не найдено.").arg(DEVICE_NAME),
+                self.tr("Устройство %1 не найдено.").replace(
+                    "%1", DEVICE_NAME
+                ),
             )
             return
 
@@ -470,8 +540,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             QMessageBox.critical(
                 self,
                 self.tr("Ошибка воспроизведения"),
-                self.tr("Не удалось запустить воспроизведение:\n%1").arg(
-                    str(exc)
+                self.tr("Не удалось запустить воспроизведение:\n%1").replace(
+                    "%1", str(exc)
                 ),
             )
             return
