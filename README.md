@@ -1,76 +1,91 @@
 # AstimWavPlayer
 
-Программа для воспроизведения WAV-файлов на устройстве MCS A-stim R 1.1.
+English | [Русский](README_RU.md)
 
-## Основная функциональность
+Application for playing WAV files on the MCS A-stim R 1.1 device.
 
-- Выбор и воспроизведение WAV-файлов через WASAPI exclusive на устройстве MCS A-stim R 1.1.
-- Автоматическая проверка подключения устройства при запуске и во время работы.
-- Ожидание подключения A-stim с возможностью выхода из приложения.
-- Автоматическая остановка воспроизведения при потере связи с устройством.
-- Отображение текущего времени и длительности файла.
-- Блокировка смены WAV-файла во время воспроизведения.
-- Подтверждение остановки воспроизведения и выхода из приложения.
+## Features
 
-### Вариант 1: Готовый установщик (рекомендуется для пользователей)
+- Selecting and playing WAV files via WASAPI exclusive mode on the MCS A-stim R 1.1 device.
+- Automatic device connection check at startup and during operation.
+- Waiting for the A-stim connection with the option to exit the application.
+- Automatic playback stop when the connection to the device is lost.
+- Display of the current position and the total file duration.
+- Volume control with clipping warning and quick reset to 50%.
+- Blocking the WAV file change during playback.
+- Confirmation of playback stop and application exit.
+- Russian and English interface, switchable at runtime.
 
-Самый простой способ - скачать готовый установщик AstimWavPlayer со страницы Releases:
+## Option 1: Ready-made installer (recommended for users)
 
-1. Перейдите на страницу [Releases](https://github.com/mcsltd/mcs-astim-wav-player/releases) этого репозитория
-2. Найдите последний релиз (самый верхний)
-3. В разделе Assets скачайте архив с установщиком
-4. Распакуйте архив
-5. Запустите установщик
-6. Следуйте инструкциям установщика
+The easiest way is to download the ready-made AstimWavPlayer installer from the Releases page:
 
-### Вариант 2: Запуск из исходного кода (для разработчиков)
+1. Open the [Releases](https://github.com/mcsltd/mcs-astim-wav-player/releases) page of this repository
+2. Find the latest release (the topmost one)
+3. In the Assets section, download the archive with the installer
+4. Unpack the archive
+5. Run the installer
+6. Follow the installer instructions
 
-Если вы хотите запустить приложение из исходного кода или внести изменения:
+## Option 2: Running from source code (for developers)
 
-#### Требования
+If you want to run the application from source code or make changes:
 
-- Python 3.12 или выше
-- Git (для клонирования репозитория)
-- Заполненный файл `.env`
+### Requirements
 
-#### Шаги по установке
+- Windows 10 or later
+- Python 3.12 or higher
+- Git (to clone the repository)
 
-1. Клонируйте репозиторий:
+### Installation steps
+
+1. Clone the repository:
 ```
 git clone git@github.com:mcsltd/mcs-astim-wav-player.git
 ```
 
-2. Создайте виртуальное окружение:
+2. Create a virtual environment:
 ```
 python -m venv venv
 venv\Scripts\activate
 ```
 
-3. Установите зависимости:
+3. Install the dependencies:
 ```
 pip install -r requirements.txt
 ```
 
-4. Запустите приложение:
+4. Run the application:
 ```
 python main.py
 ```
 
-## Требования
+## Configuration
 
-- Устройство MCS A-stim R 1.1
+The application is configured through the `config.py` file:
 
+| Parameter | Description | Default value |
+|---|---|---|
+| `DEVICE_NAME` | Name of the A-stim device | `"MCS A-Stim R1.1"` |
+| `DEBUG` | Debug mode: shows the output device selector and allows playback without a connected A-stim | `True` |
+| `VERSION` | Application version | `"v0.1.1"` |
+| `LANGUAGE` | Interface language: `"ru"` — Russian, `"en"` — English | `"ru"` |
+
+The interface language can also be switched at runtime via the **Help → Language** menu (Russian / English). The choice made in the menu applies until the application is restarted; the language at startup is determined by the `LANGUAGE` setting.
+
+## Device requirements
+
+- MCS A-stim R 1.1 device
 
 ## Copyrights
 
 Copyright © 2026, Medical Computer Systems Ltd
 
-## Лицензия
+## License
 
-Этот проект лицензирован под [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
 
-### Используемые сторонние библиотеки
+### Third-party libraries
 
-- PySide6 (Qt for Python) используется под лицензией LGPL
-- Другие библиотеки под MIT, BSD, Apache 2.0
-- Подробности в [NOTICE](NOTICE)
+- PySide6 (Qt for Python) is used under the LGPL license
+- Other libraries are used under MIT, BSD, Apache 2.0
