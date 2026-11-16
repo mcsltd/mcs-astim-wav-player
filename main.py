@@ -470,7 +470,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         path, _ = QFileDialog.getOpenFileName(
             self,
             self.tr("Выберите WAV файл для воспроизведения"),
-            path_to_dir,
+            str(path_to_dir),
             self.tr("WAV файлы (*.wav);;Все файлы (*)"),
             options=QFileDialog.Option.DontResolveSymlinks
         )
